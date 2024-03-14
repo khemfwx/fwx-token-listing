@@ -1,0 +1,20 @@
+name: Check image is png?
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-image-png:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Check image is png?
+        run: |
+          images=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.png$' | xargs)
+          echo "images: $images"
+
+          ASSETS_DIR="./assets"
+          ETH_ADDRESS_PATTERN="^0x[a-fA-F0-9]{40}$"
