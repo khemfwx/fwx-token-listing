@@ -10,8 +10,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: Check file name pattern and type image png
+      - name: Get file image add and check type image is png?
+        id: get-file-image-check-type
         run: |
           ETH_ADDRESS_PATTERN="^0x[a-fA-F0-9]{40}\.png$"
           images=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.png$' | xargs)
@@ -32,5 +35,3 @@ jobs:
                   fi
               done
           fi
-
-        
