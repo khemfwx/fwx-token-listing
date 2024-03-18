@@ -18,7 +18,7 @@ jobs:
         run: |
           ETH_ADDRESS_PATTERN="^0x[a-fA-F0-9]{40}\.png$"
           images=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.png$' | xargs)
-          echo $images
+
           if [ -z $images ]; then
               echo "Image not found, Please add image following type png"
               echo "::error::Image not found, Please add image following type png"
