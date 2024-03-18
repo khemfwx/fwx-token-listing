@@ -11,10 +11,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Check image is png?
+      - name: Check file name pattern and type image png
         run: |
+          ETH_ADDRESS_PATTERN="^0x[a-fA-F0-9]{40}\.png$"
           images=$(git diff --name-only --diff-filter=ACMRT ${{ github.event.pull_request.base.sha }} ${{ github.sha }} | grep '\.png$' | xargs)
-          echo "images: $images"
+          echo $images
+          if [ -z $images ]; then
+              echo "Image not found, Please add image following type png"
+              echo "::error::Image not found, Please add image following type png"
+              exit 1
+          else
+              for image in $images; do
+                  filename=$(basename -- "$image")
+                  echo "filename=$filename"
+                  if [[ $filename =~ $ETH_ADDRESS_PATTERN ]]; then
+                      echo "Image file $image matches Ethereum address pattern"
+                  else
+                      echo "::error::Image file $image does not match Ethereum address pattern"
+                      exit 1
+                  fi
+              done
+          fi
 
-          ASSETS_DIR="./assets"
-          ETH_ADDRESS_PATTERN="^0x[a-fA-F0-9]{40}$"
+        
